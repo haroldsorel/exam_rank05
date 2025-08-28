@@ -6,7 +6,7 @@
 /*   By: hsorel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 18:48:51 by hsorel            #+#    #+#             */
-/*   Updated: 2025/08/28 22:11:18 by hsorel           ###   ########.fr       */
+/*   Updated: 2025/08/28 22:12:56 by hsorel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ bigint bigint::operator-(const bigint &other)const
 			diff -= min._digits[i];
 		if (diff < 0)
 		{
-			res._digits.push_back(10 - (-diff));
+			diff += 10;
 			borrow = true;
 		}
 		else
@@ -234,6 +234,7 @@ bigint bigint::operator-(const bigint &other)const
 			borrow = false;
 		}
 	}
+	res._digits.push_back(diff);
 	//there can be 0 before si handle that
 	if (negativeRes)
 		res._sign = -1;
