@@ -6,7 +6,7 @@
 /*   By: hsorel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 18:48:51 by hsorel            #+#    #+#             */
-/*   Updated: 2025/08/28 22:04:14 by hsorel           ###   ########.fr       */
+/*   Updated: 2025/08/28 22:11:18 by hsorel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,20 +204,25 @@ bigint bigint::operator-(const bigint &other)const
 	bool	negativeRes = false;
 
 	bigint res;
-	bigint max;
-	bigint min;
-
-	max = *this; //temporary, use the biggest out of both of them using >
-	min = other;
+	bigint max(*this);
+	bigint min(other);
+	
+	if (max < min)
+	{
+		res = max;
+		max = min;
+		min = res;
+		negativeRes = true;
+	}
 
 	res._digits.clear();
 	for (size_t i = 0; i < max.size(); i++)
 	{
-		diff = bigger._digits[i];
+		diff = max._digits[i];
 		if (borrow)
 			diff -= 1;
-		if (i < other._digits.size())
-			diff -= other._digits[i];
+		if (i < min._digits.size())
+			diff -= min._digits[i];
 		if (diff < 0)
 		{
 			res._digits.push_back(10 - (-diff));
