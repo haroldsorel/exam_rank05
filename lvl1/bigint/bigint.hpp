@@ -20,7 +20,8 @@
 class bigint
 {
 	private:
-		std::vector<int> digits;
+		int _sign;
+		std::vector<int> _digits;
 	public:
 		//constructors
 		bigint();
@@ -71,10 +72,10 @@ class bigint
 		bigint operator/(const bigint &other)const;
 		bigint operator<<(int i)const; //bitshifting: Multiplies the number by 2^i
 		bigint operator>>(int i)const; //bitshifting: Divides the number by 2^i
+		friend std::ostream &operator<<(std::ostream &out, const bigint &bi);
 };
 
 //if you want access to private attributes but it in the class and put the keyword friends before
-std::ostream &operator<<(std::ostream &out, const bigint &bi);
 
 
 

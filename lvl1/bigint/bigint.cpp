@@ -40,12 +40,12 @@ bigint::bigint(int n)
 
 bigint::bigint(const std::string& str)
 {
-       if (value.empty())
+       if (str.empty())
        {
 	       this->_digits.push_back(0);
 	       return ;
        }
-       std::string::iterator it;
+       std::string::const_reverse_iterator it;
        //assumes there are only digits! no error check
        for (it = str.rbegin(); it != str.rend(); ++it)
        {
@@ -58,14 +58,14 @@ bigint::bigint(const bigint &other)
 	this->_digits = other._digits;
 }
 
-~bigint::bigint()
+bigint::~bigint()
 {
 
 }
 
 bigint &bigint::operator=(const bigint &other)
 {
-	if (this != *other)
+	if (this != &other)
 	{
 		this->_digits = other._digits;	
 	}
@@ -75,26 +75,15 @@ bigint &bigint::operator=(const bigint &other)
 bigint &bigint::operator+=(const bigint &other)
 {
 	*this = *this + other;
-	return (*this)
+	return (*this);
 }
 
 bigint &bigint::operator-=(const bigint &other)
 {
 	*this = *this - other;
-	return (*this)
-}
-
-bigint &bigint::operator*=(const bigint &other)
-{
-	*this = *this * other;
-	return (*this)
-}
-
-bigint &bigint::operator/=(const bigint &other)
-{
-	*this = *this / other;
 	return (*this);
 }
+
 
 bigint &bigint::operator<<=(int i)
 {
@@ -136,35 +125,70 @@ bigint &bigint::operator--(void)
 
 bool bigint::operator==(const bigint &other)const
 {
-	return ((*this - other) == 0);
+	return (this->_digits == other._digits);
 }
 
 bool bigint::operator!=(const bigint &other)const
 {
 
-	return ((*this - other) != 0);
+	return (this->_digits != other._digits);
 }
 
 bool bigint::operator<=(const bigint &other)const
 {
-	return ((*this - other) <= 0);
+	if (*this == other)
+		return (true);
+	if (*this < other)
+		return (true);
+	return (false);
 }
 
 bool bigint::operator>=(const bigint &other)const
 {
-	return ((*this - other) >= 0);
+	if (*this == other)
+		return (true);
+	if (*this > other)
+		return (true);
+	return (false);
 }
 
 bool bigint::operator<(const bigint &other)const
 {
+	if (this->_digits.size() < other._digits.size())
+		return (true);
+	if (this->_digits.size() > other._digits.size())
+		return (false);
+	if (*this == other)
+		return (false);
 
-	return ((*this - other) < 0);
+	std::vector<int>::const_reverse_iterator rit1;
+	std::vector<int>::const_reverse_iterator rit2;
+	for (rit1 = this->_digits.rbegin(), rit2 = other._digits.rbegin(); rit1 != this->_digits.rend() && rit2 != other._digits.rend(); ++rit1, ++rit2)
+	{
+		if (*rit1 > *rit2)
+			return (false);
+	}
+	return (true);
 }
 
 bool bigint::operator>(const bigint &other)const
 {
+	if (this->_digits.size() > other._digits.size())
+		return (true);
+	if (this->_digits.size() < other._digits.size())
+		return (false);
+	if (*this == other)
+		return (false);
+	
+	std::vector<int>::const_reverse_iterator rit1;
+	std::vector<int>::const_reverse_iterator rit2;
+	for (rit1 = this->_digits.rbegin(), rit2 = other._digits.rbegin(); rit1 != this->_digits.rend() && rit2 != other._digits.rend(); ++rit1, ++rit2)
+	{
+		if (*rit1 < *rit2)
+			return (false);
+	}
+	return (true);
 
-	return ((*this - other) > 0);
 }
 
 //assumes the numbers are positive ToDo negatives
@@ -216,7 +240,7 @@ bigint bigint::operator-(const bigint &other)const
 	}
 
 	res._digits.clear();
-	for (size_t i = 0; i < max.size(); i++)
+	for (size_t i = 0; i < max._digits.size(); i++)
 	{
 		diff = max._digits[i];
 		if (borrow)
@@ -241,31 +265,40 @@ bigint bigint::operator-(const bigint &other)const
 	return (res);
 }
 
-bigint bigint::operator*(const bigint &other)const
+bigint  bigint::operator<<(int shift)const
 {
+	if (shift <= 0)
+		return (*this);
 
+	//very important! if there is only one 0 you dont want to end up with 00000000
+	if (this->_digits.size() == 1 && this->_digits[0] == 0)
+		return (*this);
+
+	bigint res(*this);
+	for (int i = 0; i < shift; i++)
+		res._digits.insert(res._digits.begin(), 0);
+	return (res);
 }
 
-bigint bigint::operator/(const bigint &other)const
+bigint bigint::operator>>(int shift)const
 {
-
+	bigint res;
+	if (shift <= 0)
+		return (*this);
+	if (this->_digits.size() == 1 && this->_digits[0] == 0)
+		return (*this);
+	if (static_cast<size_t>(shift) >= this->_digits.size())
+		return (res);
+	res = *this;
+	res._digits.erase(res._digits.begin(), res._digits.begin() + shift);
+	return (res);
 }
 
-bigint  bigint::operator<<(int i)const
+std::ostream &operator<<(std::ostream &out, const bigint &bi)
 {
+	std::vector<int>::const_reverse_iterator  rit;
 
-}
-
-bigint bigint::operator>>(int i)const
-{
-
-}
-
-std::ostream &bigint::operator<<(std::ostream &out, const bigint &bi)
-{
-	std::string::iterator rit;
-
-	for (rit = rbegin(); rit != rend(); ++rit)
+	for (rit = bi._digits.rbegin(); rit != bi._digits.rend(); ++rit)
 		out << *rit;
 	return (out);
 }
