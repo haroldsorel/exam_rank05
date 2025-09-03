@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "__assertion_handler": "cpp",
+        "__locale": "cpp",
+        "bitset": "cpp",
+        "ios": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "new": "cpp",
+        "ostream": "cpp",
+        "streambuf": "cpp",
+        "string": "cpp",
+        "typeinfo": "cpp"
+    }
+}
