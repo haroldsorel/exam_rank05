@@ -6,7 +6,7 @@
 /*   By: hsorel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:46:48 by hsorel            #+#    #+#             */
-/*   Updated: 2025/09/03 19:13:22 by hsorel           ###   ########.fr       */
+/*   Updated: 2025/09/03 20:49:54 by hsorel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 typedef struct s_bsq
 {
 	int	size;
+	int	len;
 	char	empty;
 	char	obstacle;
 	char	full;
